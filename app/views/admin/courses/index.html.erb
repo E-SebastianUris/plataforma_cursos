@@ -1,0 +1,28 @@
+<h1>Cursos (Back-Office)</h1>
+
+<p><%= link_to "Nuevo Curso", new_admin_course_path %></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Precio</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @admin_courses.each do |course| %>
+      <tr>
+        <td><%= course.title %></td>
+        <td>$<%= course.price %></td>
+        <td>
+          <%= link_to "Ver", admin_course_path(course) %> |
+          <%= link_to "Editar", edit_admin_course_path(course) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+<%= link_to "Ir a Categorías", admin_categories_path %>

@@ -1,0 +1,6 @@
+<h1><%= @admin_course.title %></h1>
+<p><strong>Descripción:</strong> <%= @admin_course.description %></p>
+<p><strong>Precio:</strong> $<%= @admin_course.price %></p>
+
+<%= link_to "Editar", edit_admin_course_path(@admin_course) %> |
+<%= link_to "Volver a Cursos", admin_courses_path %>

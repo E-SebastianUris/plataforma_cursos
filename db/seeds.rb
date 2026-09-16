@@ -1,9 +1,19 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Clear existing data
+Review.destroy_all
+Enrollment.destroy_all
+Lesson.destroy_all
+Course.destroy_all
+Category.destroy_all
+User.destroy_all
+
+# Create Users
+admin = User.create!(name: "Admin", email: "admin@test.com", password: "password", role: :admin)
+profe = User.create!(name: "Profe Ruby", email: "profe@test.com", password: "password", role: :teacher)
+
+# Create Categories
+cat1 = Category.create!(name: "Programación", description: "Cursos de desarrollo de software")
+cat2 = Category.create!(name: "Diseño", description: "Cursos de UI/UX")
+
+# Create Courses
+Course.create!(title: "Ruby on Rails 101", description: "Aprende backend desde cero", price: 49.99, category: cat1, teacher: profe)
+Course.create!(title: "Figma para Devs", description: "Diseño de Wireframes", price: 29.99, category: cat2, teacher: profe)
