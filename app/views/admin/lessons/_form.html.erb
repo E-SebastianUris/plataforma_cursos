@@ -1,0 +1,27 @@
+<%= form_with model: [:admin, lesson] do |f| %>
+  <% if lesson.errors.any? %>
+    <div style="color:red">
+      <% lesson.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, "Título" %>
+    <%= f.text_field :title %>
+  </div>
+  <div>
+    <%= f.label :content, "Contenido" %>
+    <%= f.text_area :content %>
+  </div>
+  <div>
+    <%= f.label :position, "Posición" %>
+    <%= f.number_field :position %>
+  </div>
+  <div>
+    <%= f.label :course_id, "Curso" %>
+    <%= f.collection_select :course_id, Course.all, :id, :title, prompt: "Elegí un curso" %>
+  </div>
+  <%= f.submit "Guardar" %>
+<% end %>

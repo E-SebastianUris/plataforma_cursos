@@ -1,0 +1,25 @@
+<h1>Cursos</h1>
+<%= link_to "Nuevo curso", new_admin_course_path %>
+<%= link_to "Volver a categorías", admin_categories_path %>
+
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Título</th>
+    <th>Categoría</th>
+    <th>Profesor</th>
+    <th>Precio</th>
+    <th></th>
+  </tr>
+  <% @courses.each do |course| %>
+    <tr>
+      <td><%= course.title %></td>
+      <td><%= course.category.name %></td>
+      <td><%= course.user.name %></td>
+      <td>$<%= course.price %></td>
+      <td>
+        <%= link_to "Editar", edit_admin_course_path(course) %>
+        <%= link_to "Eliminar", admin_course_path(course), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
+      </td>
+    </tr>
+  <% end %>
+</table>

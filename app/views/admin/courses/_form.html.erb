@@ -1,0 +1,38 @@
+<%= form_with model: [:admin, course] do |f| %>
+  <% if course.errors.any? %>
+    <div style="color:red">
+      <% course.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, "Título" %>
+    <%= f.text_field :title %>
+  </div>
+  <div>
+    <%= f.label :description, "Descripción" %>
+    <%= f.text_area :description %>
+  </div>
+  <div>
+    <%= f.label :price, "Precio" %>
+    <%= f.number_field :price, step: 0.01 %>
+  </div>
+  <div>
+    <%= f.label :category_id, "Categoría" %>
+    <%= f.collection_select :category_id, Category.all, :id, :name, prompt: "Elegí una categoría" %>
+  </div>
+  <div>
+    <%= f.label :user_id, "Profesor" %>
+    <%= f.collection_select :user_id, User.where(role: :profesor), :id, :name, prompt: "Elegí un profesor" %>
+  </div>
+  <%= f.submit "Guardar" %>
+  <div>
+  <%= f.label :cover_image, "Imagen de portada" %>
+  <%= f.file_field :cover_image %>
+  <% if course.cover_image.attached? %>
+    <p>Imagen actual: <%= image_tag course.cover_image, style: "max-width: 200px" %></p>
+  <% end %>
+  </div>
+<% end %>
