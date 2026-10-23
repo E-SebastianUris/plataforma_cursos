@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin · Plataforma de Cursos</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="admin">
+    <header class="admin-header">
+      <%= link_to "Plataforma de Cursos", admin_root_path, class: "brand" %>
+
+      <nav>
+        <%= link_to "Categorías", admin_categories_path, class: ("active" if controller_name == "categories") %>
+        <%= link_to "Cursos", admin_courses_path, class: ("active" if controller_name == "courses") %>
+        <%= link_to "Lecciones", admin_lessons_path, class: ("active" if controller_name == "lessons") %>
+        <%= link_to "Usuarios", admin_users_path, class: ("active" if controller_name == "users") %>
+      </nav>
+
+      <div class="user-box">
+        <span><%= current_user&.name %></span>
+        <%= button_to "Cerrar sesión", logout_path, method: :delete, class: "logout" %>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <% if notice %>
+        <p class="flash notice"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="flash alert"><%= alert %></p>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

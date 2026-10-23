@@ -1,0 +1,27 @@
+<%= form_with model: [:admin, user] do |f| %>
+  <% if user.errors.any? %>
+    <div class="flash alert">
+      <% user.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "Nombre" %>
+    <%= f.text_field :name %>
+  </div>
+  <div>
+    <%= f.label :email, "Email" %>
+    <%= f.email_field :email %>
+  </div>
+  <div>
+    <%= f.label :password, user.new_record? ? "Contraseña" : "Contraseña (dejar vacía para no cambiarla)" %>
+    <%= f.password_field :password %>
+  </div>
+  <div>
+    <%= f.label :role, "Rol" %>
+    <%= f.select :role, User.roles.keys.map { |r| [r.humanize, r] } %>
+  </div>
+  <%= f.submit "Guardar" %>
+<% end %>
