@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+bin/rubocop -a --only Layout/TrailingEmptyLines#!/usr/bin/env ruby
 require "rubygems"
 require "bundler/setup"
 
