@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     resources :categories
     resources :courses
     resources :lessons
+    resources :users, except: :show
+    resources :reviews, except: :show
   end
 
   namespace :api do
