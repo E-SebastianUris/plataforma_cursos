@@ -1,0 +1,21 @@
+<h1>Reseñas</h1>
+<table>
+  <tr>
+    <th>Curso</th>
+    <th>Alumno</th>
+    <th>Puntaje</th>
+    <th>Comentario</th>
+    <th></th>
+  </tr>
+  <% @reviews.each do |review| %>
+    <tr>
+      <td><%= review.course.title %></td>
+      <td><%= review.user.name %></td>
+      <td><%= "★" * review.rating %><%= "☆" * (5 - review.rating) %></td>
+      <td><%= review.comment %></td>
+      <td>
+        <%= link_to "Eliminar", admin_review_path(review), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
+      </td>
+    </tr>
+  <% end %>
+</table>

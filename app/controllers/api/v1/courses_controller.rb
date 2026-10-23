@@ -8,7 +8,7 @@ module Api
 
       def show
         course = Course.includes(:lessons, :category, :user).find(params[:id])
-        render json: course.as_json(include: [ :lessons, :category, :user ])
+        render json: course.as_json(include: { lessons: {}, category: { only: [ :id, :name ] }, user: { only: [ :id, :name ] } })
       rescue ActiveRecord::RecordNotFound
         render json: { error: "Curso no encontrado" }, status: :not_found
       end
