@@ -12,6 +12,8 @@ module Admin
 
     def create
       @user = User.new(user_params)
+      @user.role = role_param
+
       if @user.save
         redirect_to admin_users_path, notice: "Usuario creado"
       else
@@ -25,8 +27,10 @@ module Admin
     def update
       attrs = user_params
       attrs = attrs.except(:password) if attrs[:password].blank?
+      @user.assign_attributes(attrs)
+      @user.role = role_param
 
-      if @user.update(attrs)
+      if @user.save
         redirect_to admin_users_path, notice: "Usuario actualizado"
       else
         render :edit, status: :unprocessable_entity
@@ -49,7 +53,13 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:name, :email, :password, :role)
+      params.require(:user).permit(:name, :email, :password)
+    end
+
+    # El rol se asigna aparte y solo si es uno de los valores válidos del enum
+    def role_param
+      role = params.dig(:user, :role)
+      role if User.roles.key?(role)
     end
   end
 end
