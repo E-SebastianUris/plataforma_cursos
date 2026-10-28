@@ -45,3 +45,17 @@ module ActiveSupport
     include TestFactory
   end
 end
+
+module IntegrationHelpers
+  # Inicia sesión en el back office. Los usuarios de create_user tienen la contraseña "123456"
+  def sign_in_as_admin(admin = create_user(role: "admin"))
+    post login_path, params: { email: admin.email, password: "123456" }
+    admin
+  end
+end
+
+module ActionDispatch
+  class IntegrationTest
+    include IntegrationHelpers
+  end
+end
