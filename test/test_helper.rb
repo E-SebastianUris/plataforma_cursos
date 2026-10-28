@@ -46,11 +46,18 @@ module ActiveSupport
   end
 end
 
+# Métodos para los tests de integración (back office y API)
 module IntegrationHelpers
   # Inicia sesión en el back office. Los usuarios de create_user tienen la contraseña "123456"
   def sign_in_as_admin(admin = create_user(role: "admin"))
     post login_path, params: { email: admin.email, password: "123456" }
     admin
+  end
+
+  # Devuelve el header Authorization con un token válido para la API
+  def auth_headers_for(user)
+    user.update!(auth_token: SecureRandom.hex(20))
+    { "Authorization" => "Bearer #{user.auth_token}" }
   end
 end
 

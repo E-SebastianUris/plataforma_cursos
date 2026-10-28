@@ -7,7 +7,7 @@ module Api
       def index
         reviews = @course.reviews.includes(:user).order(created_at: :desc)
         render json: {
-          average_rating: @course.reviews.average(:rating)&.round(1),
+          average_rating: @course.reviews.average(:rating)&.to_f&.round(1),
           reviews_count: @course.reviews.count,
           reviews: reviews.as_json(only: [ :id, :rating, :comment, :created_at ], include: { user: { only: [ :id, :name ] } })
         }
