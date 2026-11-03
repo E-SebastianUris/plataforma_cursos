@@ -62,6 +62,24 @@ module Api
         assert_response :not_found
         assert_equal "Curso no encontrado", response.parsed_body["error"]
       end
+
+      test "destroy cancela la inscripción del usuario autenticado" do
+        enrollment = create_enrollment(user: @alumno, course: @course, status: :activa)
+
+        delete api_v1_order_path(enrollment), headers: auth_headers_for(@alumno)
+
+        assert_response :no_content
+        assert enrollment.reload.cancelada?
+      end
+
+      test "destroy no permite cancelar inscripciones de otro usuario" do
+        otro_alumno = create_user
+        enrollment_ajeno = create_enrollment(user: otro_alumno, course: @course)
+
+        delete api_v1_order_path(enrollment_ajeno), headers: auth_headers_for(@alumno)
+
+        assert_response :not_found
+      end
     end
   end
 end

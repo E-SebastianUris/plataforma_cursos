@@ -40,6 +40,16 @@ module Api
 
         assert_not_equal primero, segundo
       end
+
+      test "logout invalida el auth_token del usuario y responde 204" do
+        @alumno.update!(auth_token: SecureRandom.hex(20))
+        headers = { "Authorization" => "Bearer #{@alumno.auth_token}" }
+
+        delete api_v1_logout_path, headers: headers
+
+        assert_response :no_content
+        assert_nil @alumno.reload.auth_token
+      end
     end
   end
 end
