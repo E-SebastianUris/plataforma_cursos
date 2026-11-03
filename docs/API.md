@@ -304,3 +304,4 @@ Cancela la inscripción propia del usuario.
 - **Acceso**: Protegido.
 - **Respuesta 204 No Content**.
 - **Error 404 Not Found**: Si la inscripción no existe o pertenece a otro usuario.
+
