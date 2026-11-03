@@ -15,11 +15,15 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       post "login", to: "sessions#create"
+      post "register", to: "registrations#create"
+      delete "logout", to: "sessions#destroy"
       resources :courses, only: %i[index show] do
-      resources :reviews, only: %i[index create]
+        resources :reviews, only: %i[index create]
       end
-      resources :orders, controller: "enrollments", only: %i[index create]
+      resources :orders, controller: "enrollments", only: %i[index create destroy]
       get "profile", to: "users#profile"
+      put "profile", to: "users#update"
+      get "categories", to: "categories#index"
     end
   end
 

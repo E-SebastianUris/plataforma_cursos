@@ -18,6 +18,14 @@ module Api
       rescue ActiveRecord::RecordNotFound
         render json: { error: "Curso no encontrado" }, status: :not_found
       end
+
+      def destroy
+        enrollment = current_user.enrollments.find(params[:id])
+        enrollment.update!(status: :cancelada)
+        head :no_content
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "Inscripción no encontrada" }, status: :not_found
+      end
     end
   end
 end
