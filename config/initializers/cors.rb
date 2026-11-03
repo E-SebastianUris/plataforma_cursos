@@ -1,8 +1,12 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins ENV.fetch("FRONT_ORIGIN", "http://localhost:5173")
+    origins(
+      /\Ahttp:\/\/localhost(:\d+)?\z/,
+      /\Ahttps:\/\/[a-z0-9\-]+(\.vercel\.app|\.onrender\.com)\z/i,
+      *ENV.fetch("FRONT_ORIGIN", "*").split(",").map(&:strip)
+    )
 
-    resource "/api/*",
+    resource "*",
       headers: :any,
       methods: [ :get, :post, :put, :patch, :delete, :options, :head ],
       expose: [ "Authorization" ]
