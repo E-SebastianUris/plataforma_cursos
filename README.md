@@ -1,140 +1,123 @@
-# Plataforma de Cursos
+# Plataforma de Cursos — Backend (API & Back Office)
 
-Aplicación web de una plataforma de cursos online, desarrollada con Ruby on Rails para el Trabajo Práctico N°1 de Programación IV.
+Trabajo Práctico N°2 de Programación IV (Integración Back-end + Front-end).
+- **Modalidad**: Individual.
+- **Autor del Backend original**: Sebastian Uris (TP1).
+- **Frontend asociado**: `plataforma_cursos_frontend` (React + Vite).
+- **Contrato detallado de la API**: Ver [docs/API.md](docs/API.md).
 
-Tiene dos partes separadas:
+Tiene dos partes integradas:
+- **Back office** de administración con Rails tradicional (controllers, vistas ERB, formularios y Active Record).
+- **API REST JSON** versionada (`/api/v1`) consumida por el front-end en React.
 
-- **Back office** de administración, hecho con Rails tradicional (controllers, vistas ERB, formularios y Active Record).
-- **API JSON** versionada (`/api/v1`) pensada para ser consumida por un front-end público.
+---
 
-## Objetivo
+## 1. Requisitos y Versiones
 
-Permitir que un profesor publique cursos organizados por categorías y con lecciones, y que los alumnos se inscriban y dejen reseñas.
+- **Ruby**: `3.4.10`
+- **Rails**: `8.1.3.1`
+- **Base de datos**: SQLite 3
+- **Gemas clave**: `rack-cors` (CORS para frontend), `bcrypt` (autenticación), `propshaft`, `image_processing` (Active Storage).
 
-## Tipos de usuario
+---
 
-| Rol | Qué hace | Cómo accede |
-|-----|----------|-------------|
-| Admin | Administra categorías, cursos, lecciones, usuarios y modera reseñas | Back office (`/login`) |
-| Profesor | Dicta cursos (es el `user` de un `Course`); lo crea un admin | Creado desde el back office |
-| Alumno | Se inscribe a cursos y los reseña | API, con token |
+## 2. Variables de Entorno
 
-Todos los usuarios están en un único modelo `User` con un campo `role` (`alumno`, `profesor`, `admin`). Solo los admin pueden iniciar sesión en el back office.
+| Variable | Descripción | Valor por defecto (desarrollo) |
+|---|---|---|
+| `FRONT_ORIGIN` | Origen permitido por CORS para solicitudes del front | `http://localhost:5173` |
+| `RAILS_MASTER_KEY` | Clave maestra para credenciales cifradas (producción) | En `config/master.key` |
 
-## Modelo de datos
+---
 
-- **User**: nombre, email (único), contraseña (`has_secure_password`), rol y `auth_token` para la API.
-- **Category**: nombre (único) y descripción. Tiene muchos cursos.
-- **Course**: título, descripción, precio (>= 0) e imagen de portada (Active Storage). Pertenece a una categoría y a un profesor. Tiene muchas lecciones, inscripciones y reseñas.
-- **Lesson**: título, contenido y posición. Pertenece a un curso.
-- **Enrollment**: inscripción de un alumno a un curso, con estado (`pendiente`, `activa`, `completada`, `cancelada`). Un alumno no puede inscribirse dos veces al mismo curso.
-- **Review**: puntaje de 1 a 5 y comentario de un alumno sobre un curso. Un alumno solo puede reseñar un curso una vez.
+## 3. Instalación y Ejecución Local
 
-Al eliminar un curso se eliminan sus lecciones, inscripciones y reseñas. Al eliminar un profesor se eliminan sus cursos.
+```powershell
+# 1. Clonar e ingresar a la carpeta
+cd C:\dev\tp2\plataforma_cursos
 
-## Instalación
-
-Requisitos: Ruby 3.4 o superior y Bundler (la base de datos es SQLite, no hace falta instalar un servidor).
-
-```bash
-git clone <URL_DEL_REPOSITORIO>
-cd plataforma_cursos
+# 2. Instalar gemas
 bundle install
-bin/rails db:setup
-bin/rails server
+
+# 3. Preparar la base y cargar datos de demostración
+ruby bin/rails db:setup
+
+# 4. Iniciar el servidor
+ruby bin/rails server
+```
+La aplicación queda escuchando en `http://localhost:3000`.
+
+---
+
+## 4. Credenciales de Prueba (Demo)
+
+Cargadas automáticamente por `db/seeds.rb`:
+
+| Rol | Email | Contraseña | Acceso |
+|---|---|---|---|
+| Admin | `admin@test.com` | `admin123` | Back office (`/login`) |
+| Profesor | `profesor@test.com` | `123456` | Creador de cursos en back office |
+| Alumno | `juan@test.com` | `123456` | API / Frontend (inscripto a Web) |
+| Alumno | `ana@test.com` | `123456` | API / Frontend (inscripto a Datos) |
+
+---
+
+## 5. Back Office
+
+Disponible en `http://localhost:3000/login` (solo administradores).
+- `/admin/categories`: CRUD de categorías.
+- `/admin/courses`: CRUD de cursos con carga de portadas (Active Storage).
+- `/admin/lessons`: CRUD de lecciones ordenadas por posición.
+- `/admin/users`: Gestión de usuarios (rol alumno, profesor o admin).
+- `/admin/reviews`: Moderación y eliminación de reseñas.
+
+---
+
+## 6. API REST (`/api/v1`)
+
+Resumen de endpoints (contrato completo con esquemas y ejemplos en [docs/API.md](docs/API.md)):
+
+| Método | Endpoint | Acceso | Descripción |
+|---|---|---|---|
+| POST | `/api/v1/login` | Público | Autenticación de usuario; devuelve `token` y datos |
+| POST | `/api/v1/register` | Público | Registro de alumno con auto-login |
+| DELETE | `/api/v1/logout` | Token | Invalida el token actual del usuario |
+| GET | `/api/v1/profile` | Token | Perfil del usuario en sesión |
+| PUT | `/api/v1/profile` | Token | Actualización de nombre, correo y contraseña |
+| GET | `/api/v1/categories` | Público | Listado de categorías `[{id, name}]` |
+| GET | `/api/v1/courses` | Público | Listado con filtros `?category_id=` y `?search=`, precio float y URL de portada |
+| GET | `/api/v1/courses/:id` | Público | Detalle con lecciones (contenido visible solo para inscriptos activos) |
+| GET | `/api/v1/courses/:course_id/reviews` | Público | Reseñas y calificación promedio |
+| POST | `/api/v1/courses/:course_id/reviews` | Token | Crear reseña (solo alumnos inscriptos) |
+| GET | `/api/v1/orders` | Token | Mis inscripciones con datos del curso |
+| POST | `/api/v1/orders` | Token | Inscribirse a un curso (estado inicial `pendiente`) y envía email |
+| DELETE | `/api/v1/orders/:id` | Token | Cancelar inscripción propia |
+
+---
+
+## 7. Tests y Calidad de Código
+
+```powershell
+# Ejecutar suite de pruebas (139 tests pasando, 0 fallas)
+ruby bin/rails test
+
+# Linter de estilo Rails Omakase
+ruby bin/rubocop
+
+# Análisis de vulnerabilidades y seguridad
+ruby bin/brakeman -q
+
+# Auditoría de dependencias
+ruby bin/bundler-audit
 ```
 
-`db:setup` crea la base de datos, aplica las migraciones y carga datos de demostración (`db/seeds.rb`). La aplicación queda en `http://localhost:3000`.
+---
 
-En Windows, si `bin/rails` no se ejecuta directamente, usar `ruby bin/rails ...`.
+## 8. Despliegue en Producción (Render)
 
-## Credenciales de prueba
-
-Cargadas por `db/seeds.rb`:
-
-| Rol | Email | Contraseña |
-|-----|-------|------------|
-| Admin | admin@test.com | admin123 |
-| Profesor | profesor@test.com | 123456 |
-| Alumno | juan@test.com | 123456 |
-| Alumno | ana@test.com | 123456 |
-
-## Back office
-
-Ingresar en `http://localhost:3000/login` con el usuario admin. Secciones (`/admin`):
-
-- **Categorías**, **Cursos** y **Lecciones**: alta, baja, modificación y listado. En los cursos se puede subir una imagen de portada.
-- **Usuarios**: alta, edición (la contraseña vacía conserva la actual) y baja. Desde acá se crean los profesores. Un admin no puede eliminar su propio usuario.
-- **Reseñas**: listado y eliminación. Las reseñas las escriben los alumnos por la API, así que el back office solo permite moderarlas.
-
-## API
-
-Todas las respuestas son JSON. Los endpoints protegidos requieren el header `Authorization: Bearer <token>`, y el token se obtiene con `POST /api/v1/login` (cambia en cada login).
-
-| Método | Endpoint | Descripción | Token |
-|--------|----------|-------------|-------|
-| POST | `/api/v1/login` | Recibe `email` y `password`; devuelve el token y los datos básicos del usuario | No |
-| GET | `/api/v1/courses` | Lista de cursos con categoría y profesor | No |
-| GET | `/api/v1/courses/:id` | Detalle de un curso con sus lecciones | No |
-| GET | `/api/v1/courses/:course_id/reviews` | Reseñas del curso, con promedio y cantidad | No |
-| POST | `/api/v1/courses/:course_id/reviews` | Crea una reseña (`rating` de 1 a 5 y `comment`) | Sí |
-| GET | `/api/v1/profile` | Datos del usuario autenticado | Sí |
-| GET | `/api/v1/orders` | Inscripciones del usuario autenticado | Sí |
-| POST | `/api/v1/orders` | Inscribe al usuario a un curso (`course_id`) y le envía un email de confirmación | Sí |
-
-Reglas de negocio:
-
-- Solo se puede reseñar un curso estando inscripto (con una inscripción que no esté cancelada) y una sola vez.
-- La reseña siempre se asocia al usuario del token.
-
-Errores: se responde con el código HTTP correspondiente (`401` sin token o con credenciales inválidas, `403` si no está inscripto, `404` si el recurso no existe, `422` si falla una validación) y un JSON con `error` o `errors`.
-
-### Ejemplo de uso
-
-```bash
-# 1. Login (devuelve el token)
-curl -X POST http://localhost:3000/api/v1/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"ana@test.com","password":"123456"}'
-
-# 2. Listar cursos
-curl http://localhost:3000/api/v1/courses
-
-# 3. Reseñar el curso 1 (reemplazar TOKEN)
-curl -X POST http://localhost:3000/api/v1/courses/1/reviews \
-  -H "Authorization: Bearer TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"rating":4,"comment":"Muy buen curso"}'
-```
-
-## Emails
-
-Al inscribirse a un curso se envía un email de confirmación con Action Mailer. En desarrollo se usa `letter_opener`, que abre el mensaje en el navegador en lugar de enviarlo.
-
-## Tests
-
-```bash
-bin/rails db:test:prepare
-bin/rails test
-```
-
-La suite tiene 126 tests (Minitest):
-
-- Modelos: validaciones, asociaciones y borrado en cascada (48).
-- Mailer: destinatario, asunto y contenido (4).
-- Back office: acceso, login y CRUD de cada sección (41).
-- API: autenticación, cursos, inscripciones y reseñas (33).
-
-## Calidad y seguridad
-
-```bash
-bin/rubocop
-bin/brakeman
-bin/bundler-audit
-```
-
-Los tres se ejecutan también en cada pull request con GitHub Actions (`.github/workflows/ci.yml`).
-
-## Tecnologías
-
-Ruby 3.4, Rails 8.1, SQLite, Active Storage, Action Mailer, Minitest, Rubocop, Brakeman y bundler-audit.
+- **Servicio Web**: Docker (utiliza el `Dockerfile` oficial de Rails 8).
+- **Arranque del contenedor**: `bin/docker-entrypoint` ejecuta automáticamente `rails db:prepare` y `rails db:seed` en cada inicio.
+- **Advertencia Render Free Tier**: El plan gratuito de Render suspende el contenedor tras minutos de inactividad (el primer request puede demorar ~50 segundos en despertar) y no cuenta con disco persistente (los datos se re-siembran de forma limpia e idempotente en cada reinicio).
+- **Variables requeridas en Render**:
+  - `RAILS_MASTER_KEY`: contenido de tu `config/master.key`.
+  - `FRONT_ORIGIN`: URL pública del frontend (ej. `https://plataforma-cursos-frontend.vercel.app`).
