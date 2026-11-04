@@ -17,6 +17,20 @@ module Api
         assert_nil curso["cover_image_url"]
       end
 
+      test "index incluye la url de la portada cuando tiene imagen adjunta" do
+        course = create_course
+        course.cover_image.attach(
+          io: StringIO.new("<svg></svg>"),
+          filename: "test.svg",
+          content_type: "image/svg+xml"
+        )
+
+        get api_v1_courses_path
+
+        curso = response.parsed_body.find { |c| c["id"] == course.id }
+        assert_match %r{/rails/active_storage/blobs/}, curso["cover_image_url"]
+      end
+
       test "index filtra por categoría" do
         cat1 = create_category(name: "Cat Uno")
         cat2 = create_category(name: "Cat Dos")

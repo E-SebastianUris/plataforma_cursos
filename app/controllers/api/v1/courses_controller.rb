@@ -44,7 +44,7 @@ module Api
       def cover_url(course)
         return nil unless course.cover_image.attached?
 
-        Rails.application.routes.url_helpers.url_for(course.cover_image)
+        "#{request.protocol}#{request.host_with_port}#{Rails.application.routes.url_helpers.rails_blob_path(course.cover_image, only_path: true)}"
       rescue StandardError
         nil
       end

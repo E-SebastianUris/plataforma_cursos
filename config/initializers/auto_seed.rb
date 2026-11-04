@@ -6,3 +6,4 @@ Rails.application.config.after_initialize do
 rescue StandardError => e
   Rails.logger.warn "[Boot] No se pudo ejecutar auto-seed: #{e.message}"
 end
+
