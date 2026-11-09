@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
-    <title>Admin · Plataforma de Cursos</title>
+    <title>Admin · HuskyByte</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -11,9 +11,13 @@
 
   <body class="admin">
     <header class="admin-header">
-      <%= link_to "Plataforma de Cursos", admin_root_path, class: "brand" %>
+      <%= link_to admin_root_path, class: "admin-brand" do %>
+        <span class="brand-logo-wrap">HB</span>
+        <strong>HuskyByte</strong>
+        <span class="badge-admin">Admin</span>
+      <% end %>
 
-      <nav>
+      <nav aria-label="Navegación del panel de administración">
         <%= link_to "Categorías", admin_categories_path, class: ("active" if controller_name == "categories") %>
         <%= link_to "Cursos", admin_courses_path, class: ("active" if controller_name == "courses") %>
         <%= link_to "Lecciones", admin_lessons_path, class: ("active" if controller_name == "lessons") %>
@@ -22,20 +26,24 @@
       </nav>
 
       <div class="user-box">
-        <span><%= current_user&.name %></span>
+        <span class="user-name"><%= current_user&.name || "Administrador" %></span>
         <%= button_to "Cerrar sesión", logout_path, method: :delete, class: "logout" %>
       </div>
     </header>
 
     <main class="admin-main">
       <% if notice %>
-        <p class="flash notice"><%= notice %></p>
+        <div class="flash notice" role="status"><%= notice %></div>
       <% end %>
       <% if alert %>
-        <p class="flash alert"><%= alert %></p>
+        <div class="flash alert" role="alert"><%= alert %></div>
       <% end %>
 
       <%= yield %>
     </main>
+
+    <footer class="admin-footer">
+      <p>© 2026 <strong>HuskyByte</strong> · Panel de Control y Gestión · UTN - TUP</p>
+    </footer>
   </body>
 </html>

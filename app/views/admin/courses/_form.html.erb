@@ -1,38 +1,51 @@
 <%= form_with model: [:admin, course] do |f| %>
   <% if course.errors.any? %>
-    <div style="color:red">
-      <% course.errors.full_messages.each do |msg| %>
-        <p><%= msg %></p>
-      <% end %>
+    <div class="flash alert">
+      <ul style="margin: 0; padding-left: 1.25rem;">
+        <% course.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 
   <div>
-    <%= f.label :title, "Título" %>
-    <%= f.text_field :title %>
+    <%= f.label :title, "Título del curso" %>
+    <%= f.text_field :title, placeholder: "Ej: Desarrollo Web con React y Node" %>
   </div>
+
   <div>
-    <%= f.label :description, "Descripción" %>
-    <%= f.text_area :description %>
+    <%= f.label :description, "Descripción completa" %>
+    <%= f.text_area :description, placeholder: "Detalle del programa, objetivos y tecnologías..." %>
   </div>
+
   <div>
-    <%= f.label :price, "Precio" %>
-    <%= f.number_field :price, step: 0.01 %>
+    <%= f.label :price, "Precio base en ARS" %>
+    <%= f.number_field :price, step: 0.01, placeholder: "Ej: 15000" %>
   </div>
+
   <div>
     <%= f.label :category_id, "Categoría" %>
     <%= f.collection_select :category_id, Category.all, :id, :name, prompt: "Elegí una categoría" %>
   </div>
+
   <div>
-    <%= f.label :user_id, "Profesor" %>
+    <%= f.label :user_id, "Profesor a cargo" %>
     <%= f.collection_select :user_id, User.where(role: :profesor), :id, :name, prompt: "Elegí un profesor" %>
   </div>
-  <%= f.submit "Guardar" %>
+
   <div>
-  <%= f.label :cover_image, "Imagen de portada" %>
-  <%= f.file_field :cover_image %>
-  <% if course.cover_image.attached? %>
-    <p>Imagen actual: <%= image_tag course.cover_image, style: "max-width: 200px" %></p>
-  <% end %>
+    <%= f.label :cover_image, "Imagen de portada (SVG / PNG / JPG)" %>
+    <%= f.file_field :cover_image, accept: "image/*" %>
+    <% if course.cover_image.attached? %>
+      <div style="margin-top: 0.75rem;">
+        <span style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 0.35rem;">Portada actual:</span>
+        <%= image_tag course.cover_image, style: "max-width: 220px; border-radius: 8px; border: 1px solid var(--border);" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div style="margin-top: 1.75rem; margin-bottom: 0;">
+    <%= f.submit "Guardar curso", class: "btn-primary" %>
   </div>
 <% end %>

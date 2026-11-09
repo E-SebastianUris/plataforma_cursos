@@ -1,22 +1,38 @@
-<h1>Usuarios</h1>
-<%= link_to "Nuevo usuario", new_admin_user_path %>
+<div class="admin-actions-bar">
+  <h1>Usuarios</h1>
+  <%= link_to "+ Nuevo usuario", new_admin_user_path, class: "btn-primary" %>
+</div>
 
-<table>
-  <tr>
-    <th>Nombre</th>
-    <th>Email</th>
-    <th>Rol</th>
-    <th></th>
-  </tr>
-  <% @users.each do |user| %>
-    <tr>
-      <td><%= user.name %></td>
-      <td><%= user.email %></td>
-      <td><%= user.role.humanize %></td>
-      <td>
-        <%= link_to "Editar", edit_admin_user_path(user) %>
-        <%= link_to "Eliminar", admin_user_path(user), data: { turbo_method: :delete, turbo_confirm: "¿Seguro? Si es profesor, se eliminan también sus cursos." } %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo electrónico</th>
+        <th>Rol en plataforma</th>
+        <th style="text-align: right;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><strong><%= user.name %></strong></td>
+          <td style="color: var(--text-muted);"><%= user.email %></td>
+          <td>
+            <% if user.admin? %>
+              <span style="background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Administrador</span>
+            <% elsif user.profesor? %>
+              <span style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Profesor</span>
+            <% else %>
+              <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Alumno</span>
+            <% end %>
+          </td>
+          <td style="text-align: right;">
+            <%= link_to "Editar", edit_admin_user_path(user) %>
+            <%= link_to "Eliminar", admin_user_path(user), data: { turbo_method: :delete, turbo_confirm: "¿Seguro? Si es profesor, se eliminan también sus cursos." } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

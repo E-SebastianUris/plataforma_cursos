@@ -1,19 +1,25 @@
 <%= form_with model: [:admin, category] do |f| %>
   <% if category.errors.any? %>
-    <div style="color:red">
-      <% category.errors.full_messages.each do |msg| %>
-        <p><%= msg %></p>
-      <% end %>
+    <div class="flash alert">
+      <ul style="margin: 0; padding-left: 1.25rem;">
+        <% category.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 
   <div>
-    <%= f.label :name, "Nombre" %>
-    <%= f.text_field :name %>
+    <%= f.label :name, "Nombre de la categoría" %>
+    <%= f.text_field :name, placeholder: "Ej: Inteligencia Artificial" %>
   </div>
+
   <div>
     <%= f.label :description, "Descripción" %>
-    <%= f.text_area :description %>
+    <%= f.text_area :description, placeholder: "Breve resumen de las tecnologías abarcadas..." %>
   </div>
-  <%= f.submit "Guardar" %>
+
+  <div style="margin-top: 1.5rem; margin-bottom: 0;">
+    <%= f.submit "Guardar categoría", class: "btn-primary" %>
+  </div>
 <% end %>

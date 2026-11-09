@@ -1,22 +1,30 @@
-<h1>Lecciones</h1>
-<%= link_to "Nueva lección", new_admin_lesson_path %>
+<div class="admin-actions-bar">
+  <h1>Lecciones</h1>
+  <%= link_to "+ Nueva lección", new_admin_lesson_path, class: "btn-primary" %>
+</div>
 
-<table>
-  <tr>
-    <th>Título</th>
-    <th>Curso</th>
-    <th>Posición</th>
-    <th></th>
-  </tr>
-  <% @lessons.each do |lesson| %>
-    <tr>
-      <td><%= lesson.title %></td>
-      <td><%= lesson.course.title %></td>
-      <td><%= lesson.position %></td>
-      <td>
-        <%= link_to "Editar", edit_admin_lesson_path(lesson) %>
-        <%= link_to "Eliminar", admin_lesson_path(lesson), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>Posición</th>
+        <th>Título</th>
+        <th>Curso asociado</th>
+        <th style="text-align: right;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @lessons.each do |lesson| %>
+        <tr>
+          <td><span style="font-family: monospace; font-weight: 700; color: var(--primary);">#<%= lesson.position %></span></td>
+          <td><strong><%= lesson.title %></strong></td>
+          <td><%= lesson.course.title %></td>
+          <td style="text-align: right;">
+            <%= link_to "Editar", edit_admin_lesson_path(lesson) %>
+            <%= link_to "Eliminar", admin_lesson_path(lesson), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

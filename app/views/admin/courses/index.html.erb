@@ -1,24 +1,32 @@
-<h1>Cursos</h1>
-<%= link_to "Nuevo curso", new_admin_course_path %>
+<div class="admin-actions-bar">
+  <h1>Cursos</h1>
+  <%= link_to "+ Nuevo curso", new_admin_course_path, class: "btn-primary" %>
+</div>
 
-<table>
-  <tr>
-    <th>Título</th>
-    <th>Categoría</th>
-    <th>Profesor</th>
-    <th>Precio</th>
-    <th></th>
-  </tr>
-  <% @courses.each do |course| %>
-    <tr>
-      <td><%= course.title %></td>
-      <td><%= course.category.name %></td>
-      <td><%= course.user.name %></td>
-      <td>$<%= course.price %></td>
-      <td>
-        <%= link_to "Editar", edit_admin_course_path(course) %>
-        <%= link_to "Eliminar", admin_course_path(course), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Categoría</th>
+        <th>Profesor</th>
+        <th>Precio Base</th>
+        <th style="text-align: right;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @courses.each do |course| %>
+        <tr>
+          <td><strong><%= course.title %></strong></td>
+          <td><span style="background: rgba(56, 189, 248, 0.1); color: var(--primary); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;"><%= course.category.name %></span></td>
+          <td><%= course.user.name %></td>
+          <td><span style="font-weight: 700; color: #ffffff;">$<%= number_with_delimiter(course.price.to_i) %> ARS</span></td>
+          <td style="text-align: right;">
+            <%= link_to "Editar", edit_admin_course_path(course) %>
+            <%= link_to "Eliminar", admin_course_path(course), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

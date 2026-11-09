@@ -1,27 +1,35 @@
 <%= form_with model: [:admin, lesson] do |f| %>
   <% if lesson.errors.any? %>
-    <div style="color:red">
-      <% lesson.errors.full_messages.each do |msg| %>
-        <p><%= msg %></p>
-      <% end %>
+    <div class="flash alert">
+      <ul style="margin: 0; padding-left: 1.25rem;">
+        <% lesson.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 
   <div>
-    <%= f.label :title, "Título" %>
-    <%= f.text_field :title %>
+    <%= f.label :title, "Título de la lección" %>
+    <%= f.text_field :title, placeholder: "Ej: Introducción a componentes y hooks" %>
   </div>
+
   <div>
-    <%= f.label :content, "Contenido" %>
-    <%= f.text_area :content %>
+    <%= f.label :position, "Número de posición / orden" %>
+    <%= f.number_field :position, min: 1, placeholder: "Ej: 1" %>
   </div>
+
   <div>
-    <%= f.label :position, "Posición" %>
-    <%= f.number_field :position %>
-  </div>
-  <div>
-    <%= f.label :course_id, "Curso" %>
+    <%= f.label :course_id, "Curso asociado" %>
     <%= f.collection_select :course_id, Course.all, :id, :title, prompt: "Elegí un curso" %>
   </div>
-  <%= f.submit "Guardar" %>
+
+  <div>
+    <%= f.label :content, "Contenido formativo de la lección" %>
+    <%= f.text_area :content, placeholder: "Texto y material didáctico visible para alumnos inscriptos..." %>
+  </div>
+
+  <div style="margin-top: 1.5rem; margin-bottom: 0;">
+    <%= f.submit "Guardar lección", class: "btn-primary" %>
+  </div>
 <% end %>

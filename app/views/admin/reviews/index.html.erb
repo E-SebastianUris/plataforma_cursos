@@ -1,21 +1,30 @@
-<h1>Reseñas</h1>
-<table>
-  <tr>
-    <th>Curso</th>
-    <th>Alumno</th>
-    <th>Puntaje</th>
-    <th>Comentario</th>
-    <th></th>
-  </tr>
-  <% @reviews.each do |review| %>
-    <tr>
-      <td><%= review.course.title %></td>
-      <td><%= review.user.name %></td>
-      <td><%= "★" * review.rating %><%= "☆" * (5 - review.rating) %></td>
-      <td><%= review.comment %></td>
-      <td>
-        <%= link_to "Eliminar", admin_review_path(review), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<div class="admin-actions-bar">
+  <h1>Reseñas y Opiniones</h1>
+</div>
+
+<div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>Curso</th>
+        <th>Alumno</th>
+        <th>Puntuación</th>
+        <th>Comentario</th>
+        <th style="text-align: right;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @reviews.each do |review| %>
+        <tr>
+          <td><strong><%= review.course.title %></strong></td>
+          <td><%= review.user.name %></td>
+          <td><span style="color: #fbbf24; font-size: 1.1rem; letter-spacing: 2px;"><%= "★" * review.rating %><%= "☆" * (5 - review.rating) %></span></td>
+          <td style="color: var(--text-muted); max-width: 380px;">"<%= review.comment %>"</td>
+          <td style="text-align: right;">
+            <%= link_to "Eliminar", admin_review_path(review), data: { turbo_method: :delete, turbo_confirm: "¿Seguro que deseas eliminar esta reseña?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

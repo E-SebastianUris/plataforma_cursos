@@ -1,20 +1,28 @@
-<h1>Categorías</h1>
-<%= link_to "Nueva categoría", new_admin_category_path %>
+<div class="admin-actions-bar">
+  <h1>Categorías</h1>
+  <%= link_to "+ Nueva categoría", new_admin_category_path, class: "btn-primary" %>
+</div>
 
-<table>
-  <tr>
-    <th>Nombre</th>
-    <th>Descripción</th>
-    <th></th>
-  </tr>
-  <% @categories.each do |category| %>
-    <tr>
-      <td><%= category.name %></td>
-      <td><%= category.description %></td>
-      <td>
-        <%= link_to "Editar", edit_admin_category_path(category) %>
-        <%= link_to "Eliminar", admin_category_path(category), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th style="text-align: right;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @categories.each do |category| %>
+        <tr>
+          <td><strong><%= category.name %></strong></td>
+          <td style="color: var(--text-muted);"><%= category.description %></td>
+          <td style="text-align: right;">
+            <%= link_to "Editar", edit_admin_category_path(category) %>
+            <%= link_to "Eliminar", admin_category_path(category), data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
